@@ -24,6 +24,10 @@ const scrapRouter = require('./routes/scrapall')
 
 app.use('/scrapall', scrapRouter)
 
+const scrapRouter2 = require('./routes/scrapandsave')
+
+app.use('/scrapandsave', scrapRouter2)
+
 // app.listen(5001)
 app.listen(port, () => {
     console.log(`Mainserver listening on port ${port}`);

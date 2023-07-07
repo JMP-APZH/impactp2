@@ -7,14 +7,29 @@ import axios from 'axios';
 const HomePage = () => {
 
   const [data, setData] = useState([]);
+  const [data2, setData2] = useState([]);
 
   const handleClick = () => {
     axios.get('http://localhost:5001/scrapall/scrapedairy3')
     // axios.get('https://webscrap972.onrender.com/scrapall/scrapedairy3')
       .then(response => {
 
-        console.log('data from response from client dairy 3:', response.data)
+        console.log('data from response from client dairy infinite:', response.data)
         setData(response.data)
+      })
+      .catch(error => {
+        // console.log(error);
+        console.log('error axios detailed', error)
+      });
+  };
+
+  const handleClick2 = () => {
+    axios.get('http://localhost:5001/scrapandsave/scrape-save')
+    // axios.get('https://webscrap972.onrender.com/scrapall/scrapedairy3')
+      .then(response => {
+
+        console.log('data from response from client scrape & save:', response.data)
+        setData2(response.data)
       })
       .catch(error => {
         // console.log(error);
@@ -31,6 +46,9 @@ const HomePage = () => {
               <h1 className='text-center'>Dairy prices review</h1>
               <div className='text-center bg-black text-white w-60 rounded-full m-5'>
                 <button onClick={handleClick}>Scrape Dairy 3</button>
+              </div>
+              <div className='text-center bg-black text-white w-60 rounded-full m-5'>
+                <button onClick={handleClick2}>Scrape & Save</button>
               </div>
             </div>
           <div>
