@@ -1,6 +1,9 @@
 import { Link, routes } from '@redwoodjs/router'
 import { MetaTags } from '@redwoodjs/web'
 
+import React, { useState } from 'react';
+import axios from 'axios';
+
 const HomePage = () => {
 
   const [data, setData] = useState([]);
