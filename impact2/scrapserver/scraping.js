@@ -4,64 +4,81 @@ require('dotenv').config();
 
 const cheerio = require('cheerio');
 const axios = require('axios');
-// const puppeteer = require('puppeteer')
-const fs = require('fs')
-
-
-
-// const { useMutation } = require('@redwoodjs/web')
-
-// const CREATE_DAIRY_MUTATION = gql`
-//   mutation CreateDairyMutation($input: CreateDairyInput!) {
-//     createDairy(input: $input) {
-//       id
-//     }
-//   }
-// `
 
 const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
+const port = process.env.PORT || 5013;
 
 const cors = require("cors");
+
+const app = express()
 
 router.use(cors());
 router.options('*', cors())
 
-// router.get('/scrape-save', (req, res) => {
-router.get('/scrape-save', async (req, res) => {
+app.use(cors());
+app.options('*', cors())
 
-    // res.send('All Scraps Overview working')
-    // res.json({message:'All Scraps Overview working 2'});
-
-    try {
-      // console.log('hello from the api 2')
-      // res.json({message:'message', message2:'message 2'});
-      const scrapedData = await scrapeData();
-      await createD(scrapedData);
-      // await saveToDatabase(scrapedData);
-      // res.send(scrapedData)
-      // console.log('Final save:', saveDairy)
-      res.json(scrapedData)
-    } catch (error) {
-      console.log('An error occurred:', error);
-      res.status(500).json({ error: 'An error occurred while scraping the data.' });
-    }
-
+app.get('/fetchdairies', async (req, res) => {
+  try {
+    console.log('hello from fetchdairies')
+    const dairies2 = fetchDairies()
+    console.log(dairies2)
+    res.json(dairies2)
+  } catch (error) {
+    console.log('An error occurred:', error);
+    res.status(500).json({ error: 'An error occurred while scraping the data.' });
+  }
 })
 
-// async function scrapeData() {
-//   const baseUrl = 'https://martinique.123-click.com';
-//   const initialUrl = `${baseUrl}/store/frais`;
-//   const scrapedData = []
+// app.get('/fetchdairies2', async (req, res) => {
+//   try {
+//     const dairies = await prisma.dairy.findMany();
+//     res.json(dairies)
+//     // console.log('Dairy records:', dairies);
+//   } catch (error) {
+//     console.error('Error fetching dairies:', error);
+//   }
+// })
 
+app.get('/fetchdairies2', async (req, res) => {
+  // function fetchDairies(res) {
+      try {
+        const sendairies = await fetchDairies()
+        // const dairies = prisma.dairy.findMany();
+        res.json(sendairies)
+        console.log('all dairies from DB:', sendairies)
+        // console.log('Dairy records:', dairies);
+      } catch (error) {
+        console.error('Error fetching dairies:', error);
+      }
+    // }
+})
 
-//   scrapedData.push({dairy1:'dairy1', dairy2:'dairy2'})
-//   console.log('Hello from the scrapeData')
-//   return scrapedData;
+// async function fetchDairies(res) {
+//   try {
+//     const dairies = await prisma.dairy.findMany();
+//     res.send(dairies)
+//     // console.log('Dairy records:', dairies);
+//   } catch (error) {
+//     console.error('Error fetching dairies:', error);
+//   }
 // }
 
+app.get('/scrapandsave2', async (req, res) => {
+  try {
+    const scrapedData = await scrapeData();
+    console.log('From the beginning:', scrapedData)
+    await saveToDatabase(scrapedData);
+    res.json(scrapedData)
+    // await fetchDairies()
+  } catch (error) {
+    console.log('An error occurred:', error);
+    res.status(500).json({ error: 'An error occurred while scraping the data.' });
+  }
+})
 
 async function scrapeData() {
   const baseUrl = 'https://martinique.123-click.com';
@@ -93,9 +110,6 @@ async function fetchAdditionalPages(url) {
               const quantite2 = $(this).find('div.poids-suffixe-holder').text().replace(/\n|\t| /g, '');
               // const prixunite = $(this).find('div.unity-price').text().replaceAll('\n', '').replaceAll('\t', '').replaceAll(' ', '')
               const prixunite = $(this).find('div.unity-price').text().replace(/\n|\t| /g, '');
-              const nutriscore = $(this).find('div.picto-item').find('img').attr('src')
-              const web = 'https://martinique.123-click.com'
-              const nutrifull = web.concat(nutriscore)
 
               dairy0.push({
                 nom,
@@ -106,8 +120,6 @@ async function fetchAdditionalPages(url) {
                 quantite,
                 quantite2,
                 prixunite,
-                nutriscore,
-                nutrifull
               })
 
       })
@@ -143,7 +155,7 @@ async function fetchAdditionalPages(url) {
     // Add the scraped data to the database
     // await createDairy(dairy[i]);
   }
-  await createD(scrapedData)
+  // await createD(scrapedData)
 
   // console.log(names.length)
 }
@@ -169,37 +181,51 @@ return scrapedData;
 }
 
 
+// ...
 
-async function createD(data) {
-console.log('hello from createDairy:')
+async function saveToDatabase(data) {
   try {
-        console.log('from api saveToDB')
-        for (const item of data) {
-          await prisma.dairy.create({
-            data: {
-              nom: item.dairy.nom,
-              prix: item.dairy.prix,
-              url: item.dairy.url,
-              prixspecial: item.dairy.prixspecial,
-              img: item.dairy.img,
-              quantite: item.dairy.quantite,
-              quantite2: item.dairy.quantite2,
-              prixunite: item.dairy.prixunite,
-              nutriscore: item.dairy.nutriscore,
-              nutrifull: item.dairy.nutrifull,
-            },
-
-        });
-      }
-      } catch (error) {
-        console.log('An error occurred while adding data to the database:', error);
-      }
-
-      await prisma.$disconnect();
-
+    for (const item of data) {
+      await prisma.dairy.create({
+        data: {
+          nom: item.dairy.nom,
+          prix: item.dairy.prix,
+          url: item.dairy.url,
+          prixspecial: item.dairy.prixspecial,
+          img: item.dairy.img,
+          quantite: item.dairy.quantite,
+          quantite2: item.dairy.quantite2,
+          prixunite: item.dairy.prixunite,
+        },
+      });
+    }
+  } catch (error) {
+    console.log('An error occurred while adding data to the database:', error);
+  }
 }
 
+// ...
 
 
+async function fetchDairies() {
+  try {
+    const dairies = await prisma.dairy.findMany();
+    // res.send(dairies)
+    console.log('Dairy records:', dairies);
+    return dairies
+  } catch (error) {
+    console.error('Error fetching dairies:', error);
+  }
+}
 
-module.exports = router
+fetchDairies()
+
+// Call the fetchDairies function to retrieve the dairy records
+// fetchDairies();
+
+// console.log('Data saved on the DB:', DatainDB)
+
+
+app.listen(port, () => {
+  console.log(`Mainserver listening on port ${port}`);
+});

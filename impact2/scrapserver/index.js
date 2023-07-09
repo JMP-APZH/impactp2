@@ -28,6 +28,10 @@ const scrapRouter2 = require('./routes/scrapandsave')
 
 app.use('/scrapandsave', scrapRouter2)
 
+const scrapRouter3 = require('./routes/scrapandsave')
+
+app.use('/scrapandsave2', scrapRouter3)
+
 // app.listen(5001)
 app.listen(port, () => {
     console.log(`Mainserver listening on port ${port}`);
