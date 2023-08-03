@@ -4581,6 +4581,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@graphql-yoga/node@npm:^3.9.1":
+  version: 3.9.1
+  resolution: "@graphql-yoga/node@npm:3.9.1"
+  dependencies:
+    graphql-yoga: 3.9.1
+    tslib: ^2.3.1
+  peerDependencies:
+    graphql: ^15.2.0 || ^16.0.0
+  checksum: e70c3d612577808aa6ce382967d5ab0f7f6962d1bb0908a12f0407e9f7e27eb0072dec07d43d9640c22484caafe0933f8b7acbac5c915a20e831dff31aef8ba0
+  languageName: node
+  linkType: hard
+
 "@graphql-yoga/subscription@npm:^3.1.0":
   version: 3.1.0
   resolution: "@graphql-yoga/subscription@npm:3.1.0"
@@ -15459,6 +15471,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"graphql@npm:^16.7.1":
+  version: 16.7.1
+  resolution: "graphql@npm:16.7.1"
+  checksum: 0b4e83382bf3cb9c82ddf61a51aab382c4de50c34025173285c580135fe8646aa281c264fcf0c2214ae92ea925742d86999fe5e2ad842b6f3b54a9ffb0b299d2
+  languageName: node
+  linkType: hard
+
 "gzip-size@npm:^6.0.0":
   version: 6.0.0
   resolution: "gzip-size@npm:6.0.0"
@@ -22773,9 +22792,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
+    "@graphql-yoga/node": ^3.9.1
     "@redwoodjs/core": 5.4.2
     axios: ^1.4.0
     cheerio: ^1.0.0-rc.12
+    graphql: ^16.7.1
     prettier-plugin-tailwindcss: ^0.3.0
   languageName: unknown
   linkType: soft

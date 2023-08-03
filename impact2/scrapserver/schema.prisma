@@ -8,6 +8,10 @@ generator client {
   binaryTargets = "native"
 }
 
+generator pothos {
+  provider = "prisma-pothos-types"
+}
+
 model Dairy {
   id          Int      @id @default(autoincrement())
   nom         String
@@ -22,4 +26,52 @@ model Dairy {
   updatedAt   DateTime @updatedAt
 }
 
+model Product {
+  id          String            @id @default(uuid()) @db.Uuid
+  nom         String
+  prix        String
+  url         String
+  prixspecial String
+  img         String
+  quantite    String
+  quantite2   String
+  prixunite   String
+  prodcats    ProductCategory[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+}
 
+model ProductCategory {
+  id          String   @id @default(uuid()) @db.Uuid
+  nom         String
+  prix        String
+  url         String
+  prixspecial String
+  img         String
+  quantite    String
+  quantite2   String
+  prixunite   String
+  article     Product  @relation(fields: [articleId], references: [id])
+  articleId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model User {
+  id        String @id @default(uuid()) @db.Uuid
+  nom       String
+  prenom    String
+  nickname  String
+  profilpic String
+  email     String @unique
+  phone     String
+
+  profileperso ProfilePerso? @relation("UserHasProfile")
+}
+
+model ProfilePerso {
+  id     String @id @default(uuid()) @db.Uuid
+  name   String
+  user   User   @relation("UserHasProfile", fields: [userId], references: [id])
+  userId String @unique
+}
